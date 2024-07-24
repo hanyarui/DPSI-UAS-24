@@ -4,7 +4,10 @@ const { authenticate, authorize } = require("../middleware/auth");
 const { handleContentUpload } = require("../middleware/upload");
 const { Contents } = require("../models");
 
-// Route to create a new content
+// authenticate: Middleware ini memastikan bahwa pengguna telah diautentikasi sebelum mereka bisa mengakses rute. Ini biasanya memeriksa token JWT atau sesi login yang valid.
+// authorize(["admin"]): Middleware ini memeriksa apakah pengguna memiliki peran tertentu (dalam hal ini, "admin") sebelum mengizinkan mereka mengakses rute tersebut. Ini berguna untuk memastikan bahwa hanya pengguna dengan hak akses yang sesuai yang dapat melakukan operasi tertentu, seperti membuat, memperbarui, atau menghapus konten.
+
+// Route untuk membuat konten baru hanya dapat diakses oleh pengguna dengan role admin
 router.post(
   "/",
   authenticate,
@@ -32,7 +35,7 @@ router.post(
   }
 );
 
-// Route to get all contents
+// Route untuk mengambil data semua konten oleh semua pengguna
 router.get("/", authenticate, async (req, res) => {
   try {
     const content = await Contents.findAll();
@@ -46,7 +49,7 @@ router.get("/", authenticate, async (req, res) => {
   }
 });
 
-// Route to get a content by ID
+// Route untuk mengambil data dari konten tertentu berdasarkan ID konten oleh semua pengguna
 router.get("/getById/:id", authenticate, async (req, res) => {
   try {
     const { id } = req.params;
@@ -58,7 +61,7 @@ router.get("/getById/:id", authenticate, async (req, res) => {
   }
 });
 
-// Route to get a content by name
+// Route untuk mengambil data dari konten tertentu berdasarkan nama konten oleh semua pengguna
 router.get("/getByName/:wisataName", authenticate, async (req, res) => {
   try {
     const { wisataName } = req.params;
@@ -70,7 +73,7 @@ router.get("/getByName/:wisataName", authenticate, async (req, res) => {
   }
 });
 
-// Route to update a content by ID
+// Route untuk mengupdate content berdasarkan ID konten hanya dapat diakses oleh pengguna dengan role admin
 router.put(
   "/updateContent/:id",
   authenticate,
@@ -100,7 +103,7 @@ router.put(
   }
 );
 
-// Route to delete a content by ID
+// Route untuk menghapus konten berdasarkan ID konten hanya dapat diakses oleh pengguna dengan role admin
 router.delete(
   "/deleteContent/:id",
   authenticate,
