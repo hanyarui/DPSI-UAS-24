@@ -32,6 +32,21 @@ router.get("/", authenticate, async (req, res) => {
   }
 });
 
+// Route to get favorites by email
+router.get("/byEmail/:email", authenticate, async (req, res) => {
+  try {
+    const { email } = req.params;
+    const favorites = await Favorites.findAll({ where: { email } });
+    if (favorites.length === 0) {
+      res.status(404).json({ message: "No favorites found for this email" });
+    } else {
+      res.json(favorites);
+    }
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
 // Route to delete a favorites by ID
 router.delete("/deleteFavorite/:id", authenticate, async (req, res) => {
   try {
