@@ -73,49 +73,6 @@ router.get("/getByName/:wisataName", authenticate, async (req, res) => {
   }
 });
 
-// Route untuk mengupdate content berdasarkan ID konten hanya dapat diakses oleh pengguna dengan role admin
-router.put(
-  "/updateContent/:id",
-  authenticate,
-  authorize(["admin"]),
-  handleContentUpload,
-  async (req, res) => {
-    try {
-      const { id } = req.params;
-      const updates = req.body;
-      const content = await Contents.findByPk(id);
-      if (!content) throw new Error("Content not found");
-
-      // List of allowed fields for update
-      const allowedFields = [
-        "wisataName",
-        "description",
-        "address",
-        "lat",
-        "lon",
-        "country",
-      ];
-
-      // If a new image is uploaded, update the image URL
-      if (req.file) {
-        updates.imageUrl = req.file.firebaseUrl;
-      }
-
-      // Filter updates to only include allowed fields
-      Object.keys(updates).forEach((key) => {
-        if (allowedFields.includes(key)) {
-          content[key] = updates[key];
-        }
-      });
-
-      await content.save();
-      res.json(content);
-    } catch (error) {
-      res.status(400).json({ message: error.message });
-    }
-  }
-);
-
 // Route untuk menghapus konten berdasarkan ID konten hanya dapat diakses oleh pengguna dengan role admin
 router.delete(
   "/deleteContent/:id",
