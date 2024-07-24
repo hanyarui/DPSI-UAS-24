@@ -1,0 +1,6 @@
+# .gitignore
+.env
+
+dpsi-project-24-86690-firebase-adminsdk-swu1v-990f5fa203.json
+
+/node_modules
