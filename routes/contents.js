@@ -86,13 +86,26 @@ router.put(
       const content = await Contents.findByPk(id);
       if (!content) throw new Error("Content not found");
 
+      // List of allowed fields for update
+      const allowedFields = [
+        "wisataName",
+        "description",
+        "address",
+        "lat",
+        "lon",
+        "country",
+      ];
+
       // If a new image is uploaded, update the image URL
       if (req.file) {
         updates.imageUrl = req.file.firebaseUrl;
       }
 
+      // Filter updates to only include allowed fields
       Object.keys(updates).forEach((key) => {
-        content[key] = updates[key];
+        if (allowedFields.includes(key)) {
+          content[key] = updates[key];
+        }
       });
 
       await content.save();
